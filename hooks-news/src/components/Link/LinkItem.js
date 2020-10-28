@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 function LinkItem() {
-  return <div>LinkItem</div>;
+  return <div>LinkItem</div>
 }
 
-export default LinkItem;
+export default LinkItem

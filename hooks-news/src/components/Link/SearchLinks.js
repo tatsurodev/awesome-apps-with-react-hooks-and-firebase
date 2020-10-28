@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 function SearchLinks() {
-  return <div>SearchLinks</div>;
+  return <div>SearchLinks</div>
 }
 
-export default SearchLinks;
+export default SearchLinks

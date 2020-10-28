@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react'
 
 function CreateLink(props) {
-  return <div>CreateLink</div>;
+  return <div>CreateLink</div>
 }
 
-export default CreateLink;
+export default CreateLink
