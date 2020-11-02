@@ -8,9 +8,11 @@ function LinkList(props) {
   const { firebase } = React.useContext(FirebaseContext)
   const [links, setLinks] = useState([])
   const [cursor, setCursor] = React.useState(null)
+  const [loading, setLoading] = React.useState(false)
   const isNewPage = props.location.pathname.includes('new')
   const isTopPage = props.location.pathname.includes('top')
   const page = Number(props.match.params.page)
+  const linkRef = firebase.db.collection('links')
 
   React.useEffect(() => {
     const unsubscribe = getLinks()
@@ -19,24 +21,22 @@ function LinkList(props) {
 
   // defaultのlinksの並び順
   function getLinks() {
+    setLoading(true)
     const hasCursor = Boolean(cursor)
     if (isTopPage) {
-      return firebase.db
-        .collection('links')
+      return linkRef
         .orderBy('voteCount', 'desc')
         .limit(LINKS_PER_PAGE)
         .onSnapshot(handleSnapshot)
       // new pageのfirst page
     } else if (page === 1) {
-      return firebase.db
-        .collection('links')
+      return linkRef
         .orderBy('created', 'desc')
         .limit(LINKS_PER_PAGE)
         .onSnapshot(handleSnapshot)
     } else if (hasCursor) {
       return (
-        firebase.db
-          .collection('links')
+        linkRef
           .orderBy('created', 'desc')
           // afterで含めない、atで含める
           .startAfter(cursor.created)
@@ -54,6 +54,7 @@ function LinkList(props) {
           const lastLink = links[links.length - 1]
           setLinks(links)
           setCursor(lastLink)
+          setLoading(false)
         })
       return () => {}
     }
@@ -67,6 +68,7 @@ function LinkList(props) {
     setLinks(links)
     const lastLink = links[links.length - 1]
     setCursor(lastLink)
+    setLoading(false)
   }
 
   function visitPreviousPage() {
@@ -84,7 +86,7 @@ function LinkList(props) {
   const pageIndex = page ? (page - 1) * LINKS_PER_PAGE + 1 : 0
 
   return (
-    <div>
+    <div style={{ opacity: loading ? 0.25 : 1 }}>
       {links.map((link, index) => (
         <LinkItem
           key={link.id}
